@@ -29,23 +29,29 @@
 
 <script lang="ts" setup>
 import TabelaDeSolicitacoes from '@/components/TabelaDeSolicitacoes.vue';
-import axios from 'axios';
-import { computed, onBeforeMount, ref } from 'vue';
-import type { ResponseSolicitacoes } from '@/types/solicitacoes';
+import { onBeforeMount, ref } from 'vue';
+import api from '@/services/api';
 
 const data = ref({});
 const paginacao = ref({});
 const search = ref('');
 const filtrando = ref(false);
 
-onBeforeMount(() => {
-  axios.get("/db.json").then(res => {
-    data.value = res.data.data;
-  }).catch(error => {
-    console.log(error);
-    
-  })
+onBeforeMount(async () => {
+  await buscarSolicitacoes();
 })
+
+async function buscarSolicitacoes(){
+  try {
+    const res = await api('get', './db.json');
+    console.log(res);
+    
+    data.value = res;
+  }catch(e){
+    console.log(e);
+    
+  }
+}
 
 function dadosFiltrados(filtrar: boolean) {
   if(!filtrar || search.value.trim() == '') return data.value;

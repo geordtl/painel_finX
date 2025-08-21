@@ -12,7 +12,7 @@
     <tbody>
       <tr v-if="!props.data || props.data.length === 0">
         <td colspan="5" class="text-center py-6 font-weight-medium text-tertiary">
-          Não encontramos resultados para essa busca!
+          Nenhum registro encontrado!
         </td>
       </tr>
 
