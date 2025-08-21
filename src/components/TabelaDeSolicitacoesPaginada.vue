@@ -1,6 +1,6 @@
 <template>
-  <v-data-table class="border-table" style="height: 400px;" :fixed-header="true" :items-length="props.paginacao?.totalDeItens" :items-per-page="props.paginacao?.itensPorPagina"> 
-    <thead class="">
+  <v-data-table class="border-table" style="max-height: 400px;" :fixed-header="true" :items-length="props.paginacao?.totalDeItens" :items-per-page="props.paginacao?.itensPorPagina"> 
+    <thead>
       <tr style="background-color: #E6F6FD;" class="text-left text-tertiary text-caption">
         <th>#ID</th>
         <th>Médico</th>
@@ -40,11 +40,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ResponseSolicitacoes } from "@/types/solicitacoes";
-import { computed,ref } from "vue";
-import type { Paginacao } from "@/types/solicitacoes";
+import type { ResponseSolicitacoes, Paginacao } from "@/types/solicitacoes";
+import { computed } from "vue";
 
 const props = defineProps<ResponseSolicitacoes>();
+
 const paginacao = computed<Paginacao>(() => props.paginacao ?? {
   paginaAtual: 1,
   itensPorPagina: 10,
@@ -53,7 +53,6 @@ const paginacao = computed<Paginacao>(() => props.paginacao ?? {
   next_page_url: '',
   prev_page_url: null
 });
-
 const itensVisiveis = computed(() => {
     const inicio = (paginacao.value?.paginaAtual - 1) * paginacao.value?.itensPorPagina;
     return props.data?.data.slice(inicio, inicio + paginacao.value?.itensPorPagina);

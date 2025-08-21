@@ -25,8 +25,8 @@
     ],
     "paginacao": {
         "paginaAtual": 1,
-        "itensPorPagina": 3,
-        "totalDePaginas": 2,
+        "itensPorPagina": 10,
+        "totalDePaginas": 1,
         "totalDeItens": 6,
         "next_page_url": "/api/items?page=2",
         "prev_page_url": null
