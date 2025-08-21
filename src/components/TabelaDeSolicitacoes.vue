@@ -1,16 +1,22 @@
 <template>
-  <v-table class="">
+  <v-table class="border-table">
     <thead>
-      <tr style="background-color: #E6F6FD;">
-        <th class="text-left">#ID</th>
-        <th class="text-left">Médico</th>
-        <th class="text-left">Paciente</th>
-        <th class="text-left">Data Nasc.</th>
-        <th class="text-left">Data solicitação</th>
+      <tr style="background-color: #E6F6FD;" class="text-left text-tertiary text-caption">
+        <th>#ID</th>
+        <th>Médico</th>
+        <th>Paciente</th>
+        <th>Data Nasc.</th>
+        <th>Data solicitação</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in props.data">
+      <tr v-if="!props.data || props.data.length === 0">
+        <td colspan="5" class="text-center py-6 font-weight-medium text-tertiary">
+          Não encontramos resultados para essa busca!
+        </td>
+      </tr>
+
+      <tr v-else v-for="item in props.data" class="text-caption text-darkGrey">
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
@@ -22,29 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import type { ResponseSolicitacoes } from "@/types/solicitacoes";
 
-interface Dados {
-    data: {
-        id: number;
-        medico: {
-            nome: string;
-        },
-        paciente: {
-            nome: string;
-            dataNascimento: string;
-        },
-        dataCriacao: string;
-    }[],
-    paginacao: {
-        paginaAtual: number,
-        itensPorPagina: number,
-        totalDePaginas: number,
-        totalDeItens: number,
-        next_page_url: string,
-        prev_page_url: null
-    }
-}
-
-const props = defineProps<Dados>();
+const props = defineProps<ResponseSolicitacoes>();
 </script>
+
+<style scoped>
+.border-table {
+    border: 1px solid #aab4be55;
+    border-radius: 8px;
+}
+</style>
