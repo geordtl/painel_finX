@@ -23,6 +23,9 @@
               color="primary"
               variant="outlined"
               @click="abrirCalendario = true"
+              clearable
+              clear-icon="mdi-close-circle"
+              @click:clear="filtroData = ''; filtrar()"
               :loading="filtrando"
             >
               <template #prepend-inner>
@@ -121,7 +124,7 @@ const historico = computed(() => storeDeSolicitacoes.getSolicitacoes);
 const filtrando = ref(false);
 const filtroMedico = ref("");
 const filtroPaciente = ref("");
-const filtroData = ref(new Date());
+const filtroData = ref();
 const abrirCalendario = ref(false);
 
 onBeforeMount(async () => {
@@ -129,9 +132,9 @@ onBeforeMount(async () => {
 });
 
 async function buscarSolicitacoes() {
-  const dataISO = filtroData.value.toISOString().split("T")[0];
+  const dataISO = filtroData?.value?.toISOString().split("T")[0];
 
-  const res = await api("get", "./dados_medicos_hoje.json", `${dataISO}`);
+  const res = await api("get", "./dados_medicos_hoje.json", `${dataISO ?? ''}`);
   if (abrirCalendario.value) abrirCalendario.value = false;
 
   storeDeSolicitacoes.setSolicitacoes(res);
@@ -177,6 +180,8 @@ async function filtrar() {
   }, 300);
 }
 const dataFormatada = computed(() => {
+  if(!filtroData.value) return '';
+
   const dia = String(filtroData.value.getDate()).padStart(2, "0");
   const mes = String(filtroData.value.getMonth() + 1).padStart(2, "0");
   const ano = filtroData.value.getFullYear();

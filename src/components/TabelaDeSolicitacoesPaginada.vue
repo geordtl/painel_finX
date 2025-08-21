@@ -1,12 +1,17 @@
 <template>
   <v-data-table class="border-table" style="max-height: 400px;" :fixed-header="true" :items-length="props.paginacao?.totalDeItens" :items-per-page="props.paginacao?.itensPorPagina"> 
     <thead>
-      <tr style="background-color: #E6F6FD;" class="text-left text-tertiary text-caption">
+      <tr class="text-left text-blue text-caption">
         <th>#ID</th>
         <th>Médico</th>
         <th>Paciente</th>
         <th class="text-truncate" style="max-width: 50px;">Data nascimento</th>
-        <th class="text-truncate" style="max-width: 50px;">Data solicitação</th>
+        <th class="text-truncate cursor-pointer" style="max-width: 50px;" @click="ordenarData()">
+          <v-icon size="16" color="lightGrey">
+            {{ ordenando ? 'mdi-arrow-down' : 'mdi-arrow-up' }}
+          </v-icon>
+          Data solicitação
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -41,7 +46,7 @@
 
 <script setup lang="ts">
 import type { ResponseSolicitacoes, Paginacao } from "@/types/solicitacoes";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 const props = defineProps<ResponseSolicitacoes>();
 
@@ -53,10 +58,15 @@ const paginacao = computed<Paginacao>(() => props.paginacao ?? {
   next_page_url: '',
   prev_page_url: null
 });
+
+const dadosOrdenados = ref(props.data?.data ? [...props.data.data] : []);
+
 const itensVisiveis = computed(() => {
     const inicio = (paginacao.value?.paginaAtual - 1) * paginacao.value?.itensPorPagina;
-    return props.data?.data.slice(inicio, inicio + paginacao.value?.itensPorPagina);
+    return dadosOrdenados.value.slice(inicio, inicio + paginacao.value?.itensPorPagina);
 })
+
+const ordenando = ref(false);
 
 function formatarData(date: string){
   const data = new Date(date);
@@ -74,6 +84,20 @@ function formatarData(date: string){
     return `${dia}/${mes}/${ano}`
   }
 }
+
+function ordenarData(){
+  ordenando.value = !ordenando.value;
+
+   dadosOrdenados.value.sort((a, b) => {
+    const dataA = new Date(a.dataCriacao).getTime();
+    const dataB = new Date(b.dataCriacao).getTime();
+    return ordenando.value ? dataA - dataB : dataB - dataA;
+  });
+}
+
+watch(props, (value) => {
+  if(value?.data?.data) dadosOrdenados.value = [...value.data.data]
+})
 </script>
 
 <style scoped>
