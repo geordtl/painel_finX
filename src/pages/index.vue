@@ -1,5 +1,6 @@
 <template>
   <div class="d-flex flex-column ma-8 ma-sm-16">
+
     <header>
       <img src="@/assets/logo.svg" alt="" width="72">
       <p class="text-h5 text-sm-h4 font-weight-medium text-tertiary mt-4">Solicitações</p>
@@ -42,15 +43,9 @@ onBeforeMount(async () => {
 })
 
 async function buscarSolicitacoes(){
-  try {
-    const res = await api('get', './db.json');
-    console.log(res);
-    
-    data.value = res;
-  }catch(e){
-    console.log(e);
-    
-  }
+  const res = await api('get', './db.json', '2024-09-20');
+  
+  data.value = res;
 }
 
 function dadosFiltrados(filtrar: boolean) {
