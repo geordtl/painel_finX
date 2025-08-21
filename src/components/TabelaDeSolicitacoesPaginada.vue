@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-if="!props.data || props.data.length === 0">
+      <tr v-if="!itensVisiveis || itensVisiveis.length === 0">
         <td colspan="5" class="text-center py-6 font-weight-medium text-tertiary">
           Nenhum registro encontrado!
         </td>
