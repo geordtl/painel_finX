@@ -57,8 +57,8 @@
             color="primary"
             clearable
             clear-icon="mdi-close-circle"
-            @keyup.enter="filtrar(true)"
-            @click:clear="filtrar(false)"
+            @keyup.enter="filtrar()"
+            @click:clear="filtroMedico = ''; filtrar()"
             :loading="filtrando"
           >
             <template #prepend-inner>
@@ -76,8 +76,8 @@
             color="primary"
             clearable
             clear-icon="mdi-close-circle"
-            @click:clear="filtrar(false)"
-            @keyup.enter="filtrar(true)"
+            @click:clear="filtroPaciente = ''; filtrar()"
+            @keyup.enter="filtrar()"
             :loading="filtrando"
           >
             <template #prepend-inner>
@@ -90,7 +90,7 @@
             rounded="xl"
             flat
             class="bg-blue text-white font-weight-regular text-none mr-2"
-            @click="filtrar(true)"
+            @click="filtrar()"
             >Pesquisar</v-btn
           >
         </v-col>
@@ -137,25 +137,25 @@ async function buscarSolicitacoes() {
   storeDeSolicitacoes.setSolicitacoes(res);
 }
 
-function filtrar(aplicarFiltro: boolean) {
-  if (!aplicarFiltro) return buscarSolicitacoes();
+async function filtrar() {
+  await buscarSolicitacoes();
 
   filtrando.value = true;
 
   const dadosFiltrados = historico.value.data.filter((item) => {
     const encontrouMedico =
       filtroMedico &&
-      item.medico.nome.toLowerCase().includes(filtroMedico.value);
+      item.medico.nome.toLowerCase().includes(filtroMedico.value.toLowerCase());
     const encontrouPaciente =
       filtroPaciente &&
-      item.paciente.nome.toLowerCase().includes(filtroPaciente.value);
+      item.paciente.nome.toLowerCase().includes(filtroPaciente.value.toLowerCase());
 
     if (filtroMedico.value && filtroPaciente.value) {
       return encontrouMedico && encontrouPaciente;
     }
 
-    if (filtroMedico) return encontrouMedico;
-    if (filtroPaciente) return encontrouPaciente;
+    if (filtroMedico.value) return encontrouMedico;
+    if (filtroPaciente.value) return encontrouPaciente;
 
     return true;
   });
