@@ -11003,8 +11003,8 @@
     ],
     "paginacao": {
         "paginaAtual": 1,
-        "itensPorPagina": 1000,
-        "totalDePaginas": 1,
+        "itensPorPagina": 50,
+        "totalDePaginas": 20,
         "totalDeItens": 1000,
         "next_page_url": null,
         "prev_page_url": null

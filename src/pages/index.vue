@@ -67,7 +67,7 @@
        </v-row> -->
     </header>
     <main class="mt-2">
-      <TabelaDeSolicitacoesPaginada :data="dadosFiltrados(filtrando)" :paginacao="paginacao" />
+      <TabelaDeSolicitacoesPaginada :data="dadosFiltrados(filtrando)" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
@@ -84,15 +84,6 @@ import TabelaDeSolicitacoesPaginada from "@/components/TabelaDeSolicitacoesPagin
 
 const storeDeSolicitacoes = useSolicitacoesStore();
 const historico = computed(() => storeDeSolicitacoes.getSolicitacoes);
-const paginacao = ref({
-        paginaAtual: 1,
-        itensPorPagina: 10,
-        totalDePaginas: 10,
-        totalDeItens: 100,
-        next_page_url: '',
-        prev_page_url: null
-})
-
 const adapter = useDate();
 const model = shallowRef(adapter.parseISO("2025-02-25"));
 
@@ -113,6 +104,8 @@ onBeforeMount(async () => {
 async function buscarSolicitacoes() {
   const res = await api("get", "./dados_medicos_hoje.json", "2025-08-21");
 
+  console.log(res);
+  
   storeDeSolicitacoes.setSolicitacoes(res);
 }
 
@@ -121,8 +114,8 @@ function dadosFiltrados(filtrar: boolean) {
 
   historico.value.filter((item) => {
     filtrando.value = true;
-    // paginacao.value = item.value.paginacao;
-
+    console.log(item);
+    
     return (
       item.medico.nome.includes(filtroMedico.value) ||
       item.paciente.nome.includes(filtroPaciente.value)

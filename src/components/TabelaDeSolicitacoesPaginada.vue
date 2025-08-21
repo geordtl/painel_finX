@@ -5,8 +5,8 @@
         <th>#ID</th>
         <th>Médico</th>
         <th>Paciente</th>
-        <th>Data Nasc.</th>
-        <th>Data solicitação</th>
+        <th class="text-truncate" style="max-width: 50px;">Data nascimento</th>
+        <th class="text-truncate" style="max-width: 50px;">Data solicitação</th>
       </tr>
     </thead>
     <tbody>
@@ -16,7 +16,7 @@
         </td>
       </tr>
 
-      <tr v-else v-for="item in props.data" class="text-caption text-darkGrey">
+      <tr v-else v-for="item in itensVisiveis" class="text-caption text-darkGrey">
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
@@ -28,10 +28,11 @@
      <template v-slot:bottom>
       <div class="text-center py-2 my-2">
         <v-pagination
-        density="compact"
-          v-model="props.paginacao.paginaAtual"
-          :length="props.paginacao.totalDePaginas"
+          density="compact"
+          v-model="paginacao.paginaAtual"
+          :length="paginacao?.totalDePaginas"
           :total-visible="5"
+          color="secondary"
         ></v-pagination>
       </div>
     </template>
@@ -40,8 +41,23 @@
 
 <script setup lang="ts">
 import type { ResponseSolicitacoes } from "@/types/solicitacoes";
+import { computed,ref } from "vue";
+import type { Paginacao } from "@/types/solicitacoes";
 
 const props = defineProps<ResponseSolicitacoes>();
+const paginacao = computed<Paginacao>(() => props.paginacao ?? {
+  paginaAtual: 1,
+  itensPorPagina: 10,
+  totalDePaginas: 1,
+  totalDeItens: 0,
+  next_page_url: '',
+  prev_page_url: null
+});
+
+const itensVisiveis = computed(() => {
+    const inicio = (paginacao.value?.paginaAtual - 1) * paginacao.value?.itensPorPagina;
+    return props.data?.data.slice(inicio, inicio + paginacao.value?.itensPorPagina);
+})
 
 function formatarData(date: string){
   const data = new Date(date);

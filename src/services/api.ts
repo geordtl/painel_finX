@@ -8,8 +8,14 @@ export default async function api(method: Metodo, endpoint: string, dataCriacao:
                 
             if(res.data && res.data?.data)
                 if(dataCriacao)
-                  return res.data?.data.filter(item => item.dataCriacao.includes(dataCriacao))
-                return res.data.data
+                  return {
+                    data: res.data?.data.filter(item => item.dataCriacao.includes(dataCriacao)),
+                    paginacao: res.data.paginacao
+                  } 
+                return {
+                  data: res.data?.data,
+                  paginacao: res.data.paginacao
+                }
       }catch(error) {
         return error;
       }

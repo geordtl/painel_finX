@@ -5,21 +5,23 @@ export interface ResponseSolicitacoes {
         paciente: Paciente
         dataCriacao: string;
     }[],
-    paginacao?: {
-        paginaAtual: number,
-        itensPorPagina: number,
-        totalDePaginas: number,
-        totalDeItens: number,
-        next_page_url: string,
-        prev_page_url: null
-    }
+    paginacao?: Paginacao;
 }
 
-interface Medico {
+export interface Medico {
     nome: string;
 }
 
-interface Paciente {
+export interface Paciente {
     nome: string;
     dataNascimento: string;
+}
+
+export interface Paginacao {
+    paginaAtual: number,
+    itensPorPagina: number,
+    totalDePaginas: number,
+    totalDeItens: number,
+    next_page_url: string,
+    prev_page_url: null
 }
