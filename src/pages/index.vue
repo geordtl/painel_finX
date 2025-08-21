@@ -23,6 +23,14 @@
 
     </header>
     <main class="mt-2">
+      <v-date-input
+        v-model="model"
+        :display-format="format"
+        max-width="368"
+        prefix="ISO Date:"
+      ></v-date-input>
+        <div class="d-flex justify-center">
+  </div>
         <TabelaDeSolicitacoes :data="dadosFiltrados(filtrando)" :paginacao="paginacao" />
     </main>
   </div>
@@ -32,6 +40,16 @@
 import TabelaDeSolicitacoes from '@/components/TabelaDeSolicitacoes.vue';
 import { onBeforeMount, ref } from 'vue';
 import api from '@/services/api';
+
+ import { shallowRef } from 'vue'
+  import { useDate } from 'vuetify'
+
+  const adapter = useDate()
+  const model = shallowRef(adapter.parseISO('2025-02-25'))
+
+  function format(date) {
+    return adapter.toISO(date)
+  }
 
 const data = ref({});
 const paginacao = ref({});
@@ -51,8 +69,12 @@ async function buscarSolicitacoes(){
 function dadosFiltrados(filtrar: boolean) {
   if(!filtrar || search.value.trim() == '') return data.value;
 
-  filtrando.value = true;
-  return data.value.filter(item => item.medico.nome.includes(search.value) || item.paciente.nome.includes(search.value));
+  data.value.filter(item => {
+    filtrando.value = true;
+    paginacao.value = item.value.paginacao;
+    
+    return item.medico.nome.includes(search.value) || item.paciente.nome.includes(search.value)
+  });
 }
 </script>
 
