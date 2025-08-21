@@ -14,7 +14,8 @@ export default createVuetify({
           secondary: "#01698F",
           tertiary: "#1E3247",
           darkGrey: "#61646B",
-          lightGrey: "#AAB4BE"
+          lightGrey: "#AAB4BE",
+          lightBlue: "#E6F6FD"
         }
       }
     }

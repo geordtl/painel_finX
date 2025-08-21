@@ -5,7 +5,7 @@ export interface ResponseSolicitacoes {
         paciente: Paciente
         dataCriacao: string;
     }[],
-    paginacao: {
+    paginacao?: {
         paginaAtual: number,
         itensPorPagina: number,
         totalDePaginas: number,
