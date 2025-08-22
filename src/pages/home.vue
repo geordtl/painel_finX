@@ -39,13 +39,13 @@
         <InputFiltro :nome="'Médico'" :icon="'mdi-stethoscope'" @clear="filtros.medico = '', filtrar()" @filtrar="filtros.medico = $event; filtrar()" />
         <InputFiltro :nome="'Paciente'" :icon="'mdi-account-outline'" @clear="filtros.paciente = '', filtrar()" @filtrar="filtros.paciente = $event; filtrar()" />
 
-        <v-btn rounded="xl" flat class="bg-primary text-white font-weight-regular text-none mt-2" @click="filtrar()">
+        <v-btn rounded="xl" flat class="bg-primary text-white font-weight-regular text-none my-2" @click="filtrar()">
           Pesquisar
         </v-btn>
       </div>
     </header>
     <main>
-      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
+      <TabelaDeSolicitacoesVirtual :data="historico" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
@@ -81,7 +81,7 @@ onBeforeMount(async () => {
 async function buscarSolicitacoes() {
   const dataISO = filtros.value.data ? filtros.value?.data?.toISOString().split("T")[0] : '';
 
-  const res = await api("get", "./dados_medicos.json", `${dataISO}`);
+  const res = await api("get", "./db1000.json", `${dataISO}`);
 
   storeDeSolicitacoes.setSolicitacoes(res);
 }

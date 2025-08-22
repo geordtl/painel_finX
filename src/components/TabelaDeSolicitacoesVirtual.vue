@@ -14,6 +14,7 @@
           </v-icon>
           Data solicitação
         </div>
+        <div>Urgência</div>
       </div>
     <tbody>
       <tr v-if="!list|| list.length === 0">
@@ -38,6 +39,11 @@
             <td style="width:250px;">{{ data.paciente.nome }}</td>
             <td style="width:370px;">{{ format.date(data.paciente.dataNascimento) }} - {{ calculateAge(data.paciente.dataNascimento) }} anos</td>
             <td style="width:250px;">{{ format.date(data.dataCriacao) }}</td>
+            <td>
+              <v-chip class="text-center" density="compact" variant="flat" :color="colors[data.urgencia].bg" :style="{ color: colors[data.urgencia].text }">
+                  {{ colors[data.urgencia].label }}
+              </v-chip>
+            </td>
           </div>
         </div>
       </div>
@@ -54,15 +60,33 @@ import { useVirtualList } from "@vueuse/core";
 import { ref, watch } from "vue";
 
 const props = defineProps<ResponseSolicitacoes>();
-const historico = ref([]);
+const historico = ref<ResponseSolicitacoes | any>([]);
 const ordenando = ref(false);
+
+const colors = {
+  baixa: {
+    label: 'Baixa',
+    bg: '#ECF7EC',
+    text: '#729870'
+  },
+  media: {
+    label: 'Média',
+    bg: '#FFF1DF',
+    text: '#B56418'
+  },
+  alta: {
+    label: 'Alta',
+    bg: '#FBE9E9',
+    text: '#872C29'
+  }
+}
 
 const { list, containerProps, wrapperProps } = useVirtualList(historico, {
   itemHeight: 96,
 });
 
 watch(props, (value) => {
-  if(value.data.data) historico.value = value.data.data
+  if(value.data?.data) historico.value = value.data.data
 })
 
 async function ordenarData(){
@@ -86,8 +110,8 @@ async function ordenarData(){
 }
 
 .containerProps {
-  max-height:400px; 
-  overflow-y:auto;
+  max-height: 400px; 
+  overflow-y: auto;
 }
 
 .list {
