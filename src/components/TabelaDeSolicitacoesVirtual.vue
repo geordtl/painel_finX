@@ -69,7 +69,7 @@ watch(props, (value) => {
 async function ordenarData(){
   ordenando.value = !ordenando.value;
 
-   historico.value.sort((a, b) => {
+   historico.value = [...historico.value].sort((a, b) => {
     const dataA = new Date(a.dataCriacao).getTime();
     const dataB = new Date(b.dataCriacao).getTime();
     return ordenando.value ? dataA - dataB : dataB - dataA;

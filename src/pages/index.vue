@@ -21,7 +21,7 @@
       <div class="d-flex justify-start align-center flex-wrap mt-2">
         <p class="mr-2">Filtros:</p>
 
-        <v-menu :close-on-content-click="true">
+        <v-menu :close-on-content-click="false">
           <template v-slot:activator="{ props }">
             <button v-bind="props" class="d-flex flex-row align-center justify-center data-button mr-2">
               <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
@@ -62,7 +62,7 @@
       <v-container> </v-container>
     </header>
     <main>
-      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
+      <TabelaDeSolicitacoesVirtual :data="historico" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
