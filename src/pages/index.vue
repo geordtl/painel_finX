@@ -43,8 +43,6 @@
           Pesquisar
         </v-btn>
       </div>
-
-      <v-container> </v-container>
     </header>
     <main>
       <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
