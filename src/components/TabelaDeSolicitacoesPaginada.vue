@@ -37,8 +37,9 @@
     </tbody>
 
      <template v-slot:bottom>
-      <div class="text-center py-2 my-2">
-        <p class="text-lightGrey">Total de registros: {{ paginacao.totalDeItens }}</p>
+      <div class="text-center text-lightGrey text-subtitle-2 py-2 my-2">
+        <p>{{ paginacao.itensPorPagina }} itens por página</p>
+        <p>Total de registros: {{ paginacao.totalDeItens }}</p>
         <v-pagination
           density="compact"
           v-model="paginacao.paginaAtual"

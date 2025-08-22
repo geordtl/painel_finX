@@ -45,10 +45,15 @@
               </v-chip>
             </td>
           </div>
+
         </div>
       </div>
     </tbody>
   </v-table>
+  <footer class="text-center text-lightGrey text-subtitle-2 mt-2">
+    <p>{{ props.paginacao?.itensPorPagina }} itens por página</p>
+    <p>Total de registros: {{ props.paginacao?.totalDeItens }}</p>
+  </footer>
 </template>
 
 <script setup lang="ts">
@@ -104,7 +109,7 @@ async function ordenarData(){
 <style scoped>
 .table {
   width: 100%;
-  max-height: 480px;
+  max-height: 500px;
   border: 1px solid #aab4be55;
   border-radius: 8px;
 }

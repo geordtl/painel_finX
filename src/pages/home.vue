@@ -45,7 +45,7 @@
       </div>
     </header>
     <main>
-      <TabelaDeSolicitacoesVirtual :data="historico" :paginacao="historico.paginacao" />
+      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
