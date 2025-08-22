@@ -25,34 +25,19 @@
           <template v-slot:activator="{ props }">
             <button v-bind="props" class="d-flex flex-row align-center justify-center data-button mr-2">
               <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
-              <p class="text-body-2">{{ filtroData ? format.date(filtroData) : 'dd/mm/yyyy' }}</p>
+              <p class="text-body-2">{{ filtros.data ? format.date(filtros.data) : 'dd/mm/yyyy' }}</p>
               <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
             </button>
           </template>
 
           <v-list class="overflow-hidden" style="height: 380px; width: 260px;">
-            <v-date-picker color="blue" v-model="filtroData" @click="buscarSolicitacoes()" header="Selecione uma data"
+            <v-date-picker color="blue" v-model="filtros.data" @click="buscarSolicitacoes()" header="Selecione uma data"
               class="date-picker-small"></v-date-picker>
           </v-list>
         </v-menu>
 
-        <div class="d-flex flex-row align-center input pa-1 px-3 my-2 mr-2" style="width: fit-content;">
-          <v-icon size="20">mdi-stethoscope</v-icon>
-          <span class="text-tertiary font-weight-regular mx-2">Médico:</span>
-          <input type="text" v-model="filtroMedico" @keyup.enter="filtrar"></input>
-          <button v-if="filtroMedico" @click="filtroMedico = ''; filtrar()">
-            <v-icon size="20">mdi-close</v-icon>
-          </button>
-        </div>
-
-        <div class="d-flex flex-row align-center input pa-1 px-3 mr-2" style="width: fit-content;">
-          <v-icon size="20">mdi-account-outline</v-icon>
-          <span class="text-tertiary font-weight-regular mx-2">Paciente:</span>
-          <input type="text" v-model="filtroPaciente" @keyup.enter="filtrar"></input>
-          <button v-if="filtroPaciente" @click="filtroPaciente = ''; filtrar()">
-            <v-icon size="20">mdi-close</v-icon>
-          </button>
-        </div>
+        <InputFiltro :nome="'Médico'" :icon="'mdi-stethoscope'" @clear="filtros.medico = '', filtrar()" @filtrar="filtros.medico = $event; filtrar()" />
+        <InputFiltro :nome="'Paciente'" :icon="'mdi-account-outline'" @clear="filtros.paciente = '', filtrar()" @filtrar="filtros.paciente = $event; filtrar()" />
 
         <v-btn rounded="xl" flat class="bg-primary text-white font-weight-regular text-none mt-2" @click="filtrar()">
           Pesquisar
@@ -62,7 +47,7 @@
       <v-container> </v-container>
     </header>
     <main>
-      <TabelaDeSolicitacoesVirtual :data="historico" :paginacao="historico.paginacao" />
+      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
@@ -83,19 +68,22 @@ const qtdSolicitacoesHoje = computed(() => {
   ).length;
 });
 
+const filtros = ref({
+  medico: '',
+  paciente: '',
+  data: '',
+})
+
 const filtrando = ref(false);
-const filtroMedico = ref("");
-const filtroPaciente = ref("");
-const filtroData = ref();
 
 onBeforeMount(async () => {
   await buscarSolicitacoes();
 });
 
 async function buscarSolicitacoes() {
-  const dataISO = filtroData?.value?.toISOString().split("T")[0];
+  const dataISO = filtros.value.data ? filtros.value?.data?.toISOString().split("T")[0] : '';
 
-  const res = await api("get", "./dados_medicos.json", `${dataISO ?? ''}`);
+  const res = await api("get", "./dados_medicos.json", `${dataISO}`);
 
   storeDeSolicitacoes.setSolicitacoes(res);
 }
@@ -107,18 +95,18 @@ async function filtrar() {
 
   const dadosFiltrados = historico.value.data.filter((item) => {
     const encontrouMedico =
-      filtroMedico &&
-      item.medico.nome.toLowerCase().includes(filtroMedico.value.toLowerCase());
+      filtros.value.medico &&
+      item.medico.nome.toLowerCase().includes(filtros.value.medico.toLowerCase());
     const encontrouPaciente =
-      filtroPaciente &&
-      item.paciente.nome.toLowerCase().includes(filtroPaciente.value.toLowerCase());
+      filtros.value.paciente &&
+      item.paciente.nome.toLowerCase().includes(filtros.value.paciente.toLowerCase());
 
-    if (filtroMedico.value && filtroPaciente.value) {
+    if (filtros.value.medico && filtros.value.paciente) {
       return encontrouMedico && encontrouPaciente;
     }
 
-    if (filtroMedico.value) return encontrouMedico;
-    if (filtroPaciente.value) return encontrouPaciente;
+    if (filtros.value.medico) return encontrouMedico;
+    if (filtros.value.paciente) return encontrouPaciente;
 
     return true;
   });
@@ -160,14 +148,6 @@ async function filtrar() {
   color: rgb(77, 77, 77);
   border-radius: 25px;
   caret-color: #00A5EA;
-}
-
-input {
-  color: #00A5EA;
-}
-
-input:focus {
-  outline: none;
 }
 
 .date-picker-small {

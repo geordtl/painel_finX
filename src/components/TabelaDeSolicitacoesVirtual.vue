@@ -1,5 +1,5 @@
 <template>
-  <v-table class="border-table" :fixed-header="true" style="width:100%; max-height: 480px; border:1px solid #aab4be55; border-radius:8px;">
+  <v-table class="table" :fixed-header="true" >
       <div
         style="background-color: #e6f6fd"
         class="d-flex text-left text-tertiary text-caption pa-4"
@@ -26,13 +26,12 @@
       </tr>
   
       <div 
-      v-bind="containerProps" style="max-height:400px; overflow-y:auto;">
+      v-bind="containerProps" class="containerProps">
         <div v-bind="wrapperProps">
           <div
             v-for="{ index, data } in list"
             :key="index"
-            style="height: 40px;  margin-bottom: 16px"
-            class="text-caption text-darkGrey pa-4"
+            class="list text-caption text-darkGrey pa-4"
           >
             <td style="min-width: 100px;" class="text-lightGrey">{{ data.id }}</td>
             <td style="width:250px;">{{ data.medico.nome }}</td>
@@ -52,7 +51,7 @@ import format from "@/utils/format";
 import { calculateAge } from "@/utils/functions/calculateAge";
 
 import { useVirtualList } from "@vueuse/core";
-import { onMounted, ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps<ResponseSolicitacoes>();
 const historico = ref([]);
@@ -79,8 +78,20 @@ async function ordenarData(){
 </script>
 
 <style scoped>
-.border-table {
+.table {
+  width: 100%;
+  max-height: 480px;
   border: 1px solid #aab4be55;
   border-radius: 8px;
+}
+
+.containerProps {
+  max-height:400px; 
+  overflow-y:auto;
+}
+
+.list {
+  height: 40px;  
+  margin-bottom: 16px
 }
 </style>

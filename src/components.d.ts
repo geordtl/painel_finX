@@ -11,6 +11,7 @@ declare module 'vue' {
     Card: typeof import('./components/CardSolicitacoes.vue')['default']
     CardCirurgias: typeof import('./components/CardCirurgias.vue')['default']
     CardSolicitacoes: typeof import('./components/CardSolicitacoes.vue')['default']
+    InputFiltro: typeof import('./components/InputFiltro.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TabelaDeSolicitacoes: typeof import('./components/TabelaDeSolicitacoesVirtual.vue')['default']
