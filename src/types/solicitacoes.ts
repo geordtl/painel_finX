@@ -4,9 +4,12 @@ export interface ResponseSolicitacoes {
         medico: Medico,
         paciente: Paciente
         dataCriacao: string;
+        urgencia: TiposUrgencia
     }[],
     paginacao?: Paginacao;
 }
+
+type TiposUrgencia = 'baixa' | 'media' | 'alta';
 
 export interface Medico {
     nome: string;

@@ -12,11 +12,12 @@
           </v-icon>
           Data solicitação
         </th>
+        <th>Urgência</th>
       </tr>
     </thead>
     <tbody>
       <tr v-if="!itensVisiveis || itensVisiveis.length === 0">
-        <td colspan="5" class="text-center py-6 font-weight-medium text-tertiary">
+        <td colspan="6" class="text-center py-6 font-weight-medium text-tertiary">
           Nenhum registro encontrado!
         </td>
       </tr>
@@ -27,11 +28,17 @@
         <td>{{ item.paciente.nome }}</td>
         <td>{{ calculateAge(item.paciente.dataNascimento) }} anos</td>
         <td>{{ format.date(item.dataCriacao) }}</td>
+        <td>
+          <v-chip class="text-center" density="compact" variant="flat" :color="colors[item.urgencia].bg" :style="{ color: colors[item.urgencia].text }">
+              {{ colors[item.urgencia].label }}
+          </v-chip>
+        </td>
       </tr>
     </tbody>
 
      <template v-slot:bottom>
       <div class="text-center py-2 my-2">
+        <p class="text-lightGrey">Total de registros: {{ paginacao.totalDeItens }}</p>
         <v-pagination
           density="compact"
           v-model="paginacao.paginaAtual"
@@ -63,6 +70,24 @@ const paginacao = computed<Paginacao>(() => props.paginacao ?? {
 
 const dadosOrdenados = ref(props.data?.data ? [...props.data.data] : []);
 const ordenando = ref(false);
+
+const colors = {
+  baixa: {
+    label: 'Baixa',
+    bg: '#ECF7EC',
+    text: '#729870'
+  },
+  media: {
+    label: 'Média',
+    bg: '#FFF1DF',
+    text: '#B56418'
+  },
+  alta: {
+    label: 'Alta',
+    bg: '#FBE9E9',
+    text: '#872C29'
+  }
+}
 
 const itensVisiveis = computed(() => {
     const inicio = (paginacao.value?.paginaAtual - 1) * paginacao.value?.itensPorPagina;

@@ -1,73 +1,68 @@
 <template>
   <div class="d-flex flex-column ma-8 ma-sm-16">
     <header>
-      <img src="@/assets/logo.svg" alt="Logo Fin-X" class="logo" />
-      <p class="text-h5 text-sm-h4 font-weight-medium text-tertiary mt-4">
-        Solicitações cirúrgicas
-      </p>
-      <p class="text-body-2 text-lightGrey mt-1 mb-2">
-        Consulte aqui as solicitações feitas para a Fin-X!
-      </p>
+      <section class="d-flex flex-row flex-wrap justify-space-between">
+        <div>
+          <img src="@/assets/logo.svg" alt="Logo Fin-X" class="logo" />
+          <p class="text-h5 text-sm-h4 font-weight-medium text-tertiary mt-4">
+            Solicitações cirúrgicas
+          </p>
+          <p class="text-body-2 text-lightGrey mt-1 mb-2">
+            Consulte aqui as solicitações feitas para a Fin-X!
+          </p>
+        </div>
 
-      <v-menu :close-on-content-click="true">
-        <template v-slot:activator="{ props }">
-        <button v-bind="props" class="d-flex flex-row align-center justify-center data-button">
-          <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
-          <p class="text-body-2">{{ filtroData ? format.date(filtroData) : 'dd/mm/yyyy' }}</p>
-          <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
-        </button>
-        </template>
-
-        <v-list class="overflow-hidden" style="height: 380px; width: 260px;">
-          <v-date-picker
-            color="blue"
-            v-model="filtroData"
-            @click="buscarSolicitacoes()"
-            header="Selecione uma data"
-            class="date-picker-small"
-          ></v-date-picker>
-        </v-list>
-      </v-menu>
-
+        <div class="d-flex flex-row flex-wrap">
+          <CardSolicitacoes :quantidade="qtdSolicitacoesHoje" class="mr-2 mb-2" />
+          <CardCirurgias :quantidade="8" class="mr-2 mb-2" />
+        </div>
+      </section>
 
       <div class="d-flex justify-start align-center flex-wrap mt-2">
-          <p class="mr-2">Filtros:</p>
+        <p class="mr-2">Filtros:</p>
 
-          <div class="d-flex flex-row align-center input pa-1 px-3 my-2 mr-2" style="width: fit-content;">
-            <v-icon size="20">mdi-stethoscope</v-icon>
-            <span class="text-tertiary font-weight-regular mx-2">Médico:</span>
-            <input type="text" v-model="filtroMedico" @keyup.enter="filtrar"></input>
-            <button v-if="filtroMedico" @click="filtroMedico = ''; filtrar()">
-              <v-icon size="20">mdi-close</v-icon>
+        <v-menu :close-on-content-click="true">
+          <template v-slot:activator="{ props }">
+            <button v-bind="props" class="d-flex flex-row align-center justify-center data-button mr-2">
+              <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
+              <p class="text-body-2">{{ filtroData ? format.date(filtroData) : 'dd/mm/yyyy' }}</p>
+              <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
             </button>
-          </div>
+          </template>
 
-          <div class="d-flex flex-row align-center input pa-1 px-3" style="width: fit-content;">
-            <v-icon size="20">mdi-account-outline</v-icon>
-            <span class="text-tertiary font-weight-regular mx-2">Paciente:</span>
-            <input type="text" v-model="filtroPaciente" @keyup.enter="filtrar"></input>
-            <button v-if="filtroPaciente" @click="filtroPaciente = ''; filtrar()">
-              <v-icon size="20">mdi-close</v-icon>
-            </button>
-          </div>
-          
-          <v-btn
-              rounded="xl"
-              flat
-              class="bg-primary text-white font-weight-regular text-none ml-2"
-              @click="filtrar()"
-              >
-              Pesquisar
-          </v-btn>
+          <v-list class="overflow-hidden" style="height: 380px; width: 260px;">
+            <v-date-picker color="blue" v-model="filtroData" @click="buscarSolicitacoes()" header="Selecione uma data"
+              class="date-picker-small"></v-date-picker>
+          </v-list>
+        </v-menu>
+
+        <div class="d-flex flex-row align-center input pa-1 px-3 my-2 mr-2" style="width: fit-content;">
+          <v-icon size="20">mdi-stethoscope</v-icon>
+          <span class="text-tertiary font-weight-regular mx-2">Médico:</span>
+          <input type="text" v-model="filtroMedico" @keyup.enter="filtrar"></input>
+          <button v-if="filtroMedico" @click="filtroMedico = ''; filtrar()">
+            <v-icon size="20">mdi-close</v-icon>
+          </button>
+        </div>
+
+        <div class="d-flex flex-row align-center input pa-1 px-3 mr-2" style="width: fit-content;">
+          <v-icon size="20">mdi-account-outline</v-icon>
+          <span class="text-tertiary font-weight-regular mx-2">Paciente:</span>
+          <input type="text" v-model="filtroPaciente" @keyup.enter="filtrar"></input>
+          <button v-if="filtroPaciente" @click="filtroPaciente = ''; filtrar()">
+            <v-icon size="20">mdi-close</v-icon>
+          </button>
+        </div>
+
+        <v-btn rounded="xl" flat class="bg-primary text-white font-weight-regular text-none mt-2" @click="filtrar()">
+          Pesquisar
+        </v-btn>
       </div>
-      
+
       <v-container> </v-container>
     </header>
     <main>
-      <TabelaDeSolicitacoesPaginada
-        :data="historico"
-        :paginacao="historico.paginacao"
-      />
+      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
     </main>
   </div>
 </template>
@@ -75,16 +70,18 @@
 <script lang="ts" setup>
 import { useSolicitacoesStore } from "@/store/useStoreSolicitacoes";
 import { onBeforeMount, ref, computed } from "vue";
-import { useDate } from "vuetify";
 import api from "@/services/api";
 import format from "@/utils/format";
 
-import TabelaDeSolicitacoesVirtual from "@/components/TabelaDeSolicitacoesVirtual.vue";
-import TabelaDeSolicitacoesPaginada from "@/components/TabelaDeSolicitacoesPaginada.vue";
-import { formatDate } from "@vueuse/core";
-
 const storeDeSolicitacoes = useSolicitacoesStore();
 const historico = computed(() => storeDeSolicitacoes.getSolicitacoes);
+const qtdSolicitacoesHoje = computed(() => {
+  const hojeStr = new Date().toDateString();
+
+  return historico.value.data.filter(item =>
+    new Date(item.dataCriacao).toDateString() === hojeStr
+  ).length;
+});
 
 const filtrando = ref(false);
 const filtroMedico = ref("");
@@ -98,7 +95,7 @@ onBeforeMount(async () => {
 async function buscarSolicitacoes() {
   const dataISO = filtroData?.value?.toISOString().split("T")[0];
 
-  const res = await api("get", "./dados_medicos_hoje.json", `${dataISO ?? ''}`);
+  const res = await api("get", "./dados_medicos.json", `${dataISO ?? ''}`);
 
   storeDeSolicitacoes.setSolicitacoes(res);
 }
@@ -150,6 +147,7 @@ async function filtrar() {
     width: 70px;
   }
 }
+
 @media screen and (min-width: 666px) {
   .logo {
     width: 120px;
@@ -173,8 +171,10 @@ input:focus {
 }
 
 .date-picker-small {
-  transform: scale(0.8); /* 80% do tamanho original */
-  transform-origin: top left; /* garante que encolha a partir do canto */
+  transform: scale(0.8);
+  /* 80% do tamanho original */
+  transform-origin: top left;
+  /* garante que encolha a partir do canto */
 }
 
 .data-button {
