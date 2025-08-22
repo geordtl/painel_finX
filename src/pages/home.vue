@@ -12,7 +12,7 @@
           </p>
         </div>
 
-        <div class="d-flex flex-row flex-wrap">
+        <div class="d-flex flex-row flex-wrap justify-end">
           <CardSolicitacoes :quantidade="qtdSolicitacoesHoje" class="mr-2 mb-2" />
           <CardCirurgias :quantidade="8" class="mr-2 mb-2" />
         </div>
