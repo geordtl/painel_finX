@@ -1,11 +1,11 @@
 <template>
   <v-data-table class="border-table" style="max-height: 400px;" :fixed-header="true" :items-length="props.paginacao?.totalDeItens" :items-per-page="props.paginacao?.itensPorPagina"> 
     <thead>
-      <tr class="text-left text-blue text-caption">
+      <tr class="text-left text-primary text-caption">
         <th>#ID</th>
         <th>Médico</th>
         <th>Paciente</th>
-        <th class="text-truncate" style="max-width: 50px;">Data nascimento</th>
+        <th class="text-truncate" style="max-width: 50px;">Idade</th>
         <th class="text-truncate cursor-pointer" style="max-width: 50px;" @click="ordenarData()">
           <v-icon size="16" color="lightGrey">
             {{ ordenando ? 'mdi-arrow-down' : 'mdi-arrow-up' }}
@@ -25,7 +25,7 @@
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
-        <td>{{ format.date(item.paciente.dataNascimento) }} - {{ calculateAge(item.paciente.dataNascimento) }} anos</td>
+        <td>{{ calculateAge(item.paciente.dataNascimento) }} anos</td>
         <td>{{ format.date(item.dataCriacao) }}</td>
       </tr>
     </tbody>

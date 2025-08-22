@@ -9,36 +9,17 @@
         Consulte aqui as solicitações feitas para a Fin-X!
       </p>
 
-      <v-menu >
+      <v-menu :close-on-content-click="true">
         <template v-slot:activator="{ props }">
-          <v-col sm="4" md="2" class="mt-6 py-0 px-1">
-            <v-text-field
-              :hide-details="true"
-              :value="filtroData"
-              label="Filtrar por data"
-              class=""
-              v-bind="props"
-              density="compact"
-              color="primary"
-              variant="outlined"
-              @click="abrirCalendario = true"
-              clearable
-              clear-icon="mdi-close-circle"
-              @click:clear="filtroData = ''; filtrar()"
-              :loading="filtrando"
-            >
-              <template #prepend-inner>
-                <v-icon size="16" color="primary"
-                  >mdi-calendar-blank-outline</v-icon
-                >
-              </template>
-            </v-text-field>
-          </v-col>
+        <button v-bind="props" class="d-flex flex-row align-center justify-center data-button">
+          <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
+          <p class="text-body-2">{{ filtroData ? format.date(filtroData) : 'dd/mm/yyyy' }}</p>
+          <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
+        </button>
         </template>
 
         <v-list class="overflow-hidden" style="height: 380px; width: 260px;">
           <v-date-picker
-            v-if="abrirCalendario"
             color="blue"
             v-model="filtroData"
             @click="buscarSolicitacoes()"
@@ -48,59 +29,42 @@
         </v-list>
       </v-menu>
 
-      <v-row class="d-flex justify-start align-center mt-4">
-        <v-col cols="12" sm="4" class="my-0 py-0 px-1">
-          <v-text-field
-            :hide-details="true"
-            v-model="filtroMedico"
-            label="Filtrar por médico"
-            class="ma-2"
-            density="compact"
-            color="primary"
-            clearable
-            clear-icon="mdi-close-circle"
-            @keyup.enter="filtrar()"
-            @click:clear="filtroMedico = ''; filtrar()"
-            :loading="filtrando"
-          >
-            <template #prepend-inner>
-              <v-icon size="16" color="primary">mdi-stethoscope</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="4" class="my-0 py-0 px-1">
-          <v-text-field
-            :hide-details="true"
-            v-model="filtroPaciente"
-            label="Filtrar por paciente"
-            class="ma-2"
-            density="compact"
-            color="primary"
-            clearable
-            clear-icon="mdi-close-circle"
-            @click:clear="filtroPaciente = ''; filtrar()"
-            @keyup.enter="filtrar()"
-            :loading="filtrando"
-          >
-            <template #prepend-inner>
-              <v-icon size="16" color="primary">mdi-account-outline</v-icon>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="4">
+
+      <div class="d-flex justify-start align-center flex-wrap mt-2">
+          <p class="mr-2">Filtros:</p>
+
+          <div class="d-flex flex-row align-center input pa-1 px-3 my-2 mr-2" style="width: fit-content;">
+            <v-icon size="20">mdi-stethoscope</v-icon>
+            <span class="text-tertiary font-weight-regular mx-2">Médico:</span>
+            <input type="text" v-model="filtroMedico" @keyup.enter="filtrar"></input>
+            <button v-if="filtroMedico" @click="filtroMedico = ''; filtrar()">
+              <v-icon size="20">mdi-close</v-icon>
+            </button>
+          </div>
+
+          <div class="d-flex flex-row align-center input pa-1 px-3" style="width: fit-content;">
+            <v-icon size="20">mdi-account-outline</v-icon>
+            <span class="text-tertiary font-weight-regular mx-2">Paciente:</span>
+            <input type="text" v-model="filtroPaciente" @keyup.enter="filtrar"></input>
+            <button v-if="filtroPaciente" @click="filtroPaciente = ''; filtrar()">
+              <v-icon size="20">mdi-close</v-icon>
+            </button>
+          </div>
+          
           <v-btn
-            rounded="xl"
-            flat
-            class="bg-blue text-white font-weight-regular text-none mr-2"
-            @click="filtrar()"
-            >Pesquisar</v-btn
-          >
-        </v-col>
-      </v-row>
+              rounded="xl"
+              flat
+              class="bg-primary text-white font-weight-regular text-none ml-2"
+              @click="filtrar()"
+              >
+              Pesquisar
+          </v-btn>
+      </div>
+      
       <v-container> </v-container>
     </header>
     <main>
-      <TabelaDeSolicitacoesVirtual
+      <TabelaDeSolicitacoesPaginada
         :data="historico"
         :paginacao="historico.paginacao"
       />
@@ -117,6 +81,7 @@ import format from "@/utils/format";
 
 import TabelaDeSolicitacoesVirtual from "@/components/TabelaDeSolicitacoesVirtual.vue";
 import TabelaDeSolicitacoesPaginada from "@/components/TabelaDeSolicitacoesPaginada.vue";
+import { formatDate } from "@vueuse/core";
 
 const storeDeSolicitacoes = useSolicitacoesStore();
 const historico = computed(() => storeDeSolicitacoes.getSolicitacoes);
@@ -125,7 +90,6 @@ const filtrando = ref(false);
 const filtroMedico = ref("");
 const filtroPaciente = ref("");
 const filtroData = ref();
-const abrirCalendario = ref(false);
 
 onBeforeMount(async () => {
   await buscarSolicitacoes();
@@ -135,7 +99,6 @@ async function buscarSolicitacoes() {
   const dataISO = filtroData?.value?.toISOString().split("T")[0];
 
   const res = await api("get", "./dados_medicos_hoje.json", `${dataISO ?? ''}`);
-  if (abrirCalendario.value) abrirCalendario.value = false;
 
   storeDeSolicitacoes.setSolicitacoes(res);
 }
@@ -194,12 +157,31 @@ async function filtrar() {
 }
 
 .input {
-  border: 1px solid #aab4be;
-  border-radius: 5px;
+  height: 33px;
+  border: 1px solid #90DBFA;
+  color: rgb(77, 77, 77);
+  border-radius: 25px;
+  caret-color: #00A5EA;
+}
+
+input {
+  color: #00A5EA;
+}
+
+input:focus {
+  outline: none;
 }
 
 .date-picker-small {
   transform: scale(0.8); /* 80% do tamanho original */
   transform-origin: top left; /* garante que encolha a partir do canto */
+}
+
+.data-button {
+  height: 33px;
+  min-width: 145px;
+  border-radius: 25px;
+  color: #525252;
+  background-color: #F0F1F3;
 }
 </style>

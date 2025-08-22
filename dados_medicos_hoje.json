@@ -3,10 +3,10 @@
         {
             "id": 1,
             "medico": {
-                "nome": "Carla Rocha"
+                "nome": "Luiz Henrique"
             },
             "paciente": {
-                "nome": "Lucas Correia",
+                "nome": "Geovanna",
                 "dataNascimento": "2003-09-29"
             },
             "dataCriacao": "2025-08-19T14:24:51Z"

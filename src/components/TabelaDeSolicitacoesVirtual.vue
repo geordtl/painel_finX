@@ -25,7 +25,8 @@
         </td>
       </tr>
   
-      <div v-bind="containerProps" style="max-height:400px; overflow-y:auto;">
+      <div 
+      v-bind="containerProps" style="max-height:400px; overflow-y:auto;">
         <div v-bind="wrapperProps">
           <div
             v-for="{ index, data } in list"
