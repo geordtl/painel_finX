@@ -25,7 +25,7 @@
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
-        <td>{{ format.date(item.paciente.dataNascimento) }}</td>
+        <td>{{ format.date(item.paciente.dataNascimento) }} - {{ calcularIdade(item.paciente.dataNascimento) }} anos</td>
         <td>{{ format.date(item.dataCriacao) }}</td>
       </tr>
     </tbody>
@@ -79,6 +79,18 @@ function ordenarData(){
   });
 }
 
+function calcularIdade(dataNascimento: string) {
+    const hoje = new Date();
+    const aniversario = new Date(dataNascimento);
+    let idade = hoje.getFullYear() - aniversario.getFullYear();
+    const m = hoje.getMonth() - aniversario.getMonth();
+    
+    if (m < 0 || (m === 0 && hoje.getDate() < aniversario.getDate())) {
+        idade--;
+    }
+    
+    return idade;
+}
 watch(props, (value) => {
   if(value?.data?.data) dadosOrdenados.value = [...value.data.data]
 })
