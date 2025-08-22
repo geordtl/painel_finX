@@ -25,7 +25,7 @@
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
-        <td>{{ format.date(item.paciente.dataNascimento) }} - {{ calcularIdade(item.paciente.dataNascimento) }} anos</td>
+        <td>{{ format.date(item.paciente.dataNascimento) }} - {{ calculateAge(item.paciente.dataNascimento) }} anos</td>
         <td>{{ format.date(item.dataCriacao) }}</td>
       </tr>
     </tbody>
@@ -48,6 +48,7 @@
 import type { ResponseSolicitacoes, Paginacao } from "@/types/solicitacoes";
 import { computed, ref, watch } from "vue";
 import format from "@/utils/format";
+import { calculateAge } from "@/utils/functions/calculateAge";
 
 const props = defineProps<ResponseSolicitacoes>();
 
@@ -61,13 +62,12 @@ const paginacao = computed<Paginacao>(() => props.paginacao ?? {
 });
 
 const dadosOrdenados = ref(props.data?.data ? [...props.data.data] : []);
+const ordenando = ref(false);
 
 const itensVisiveis = computed(() => {
     const inicio = (paginacao.value?.paginaAtual - 1) * paginacao.value?.itensPorPagina;
     return dadosOrdenados.value.slice(inicio, inicio + paginacao.value?.itensPorPagina);
 })
-
-const ordenando = ref(false);
 
 function ordenarData(){
   ordenando.value = !ordenando.value;
@@ -79,18 +79,6 @@ function ordenarData(){
   });
 }
 
-function calcularIdade(dataNascimento: string) {
-    const hoje = new Date();
-    const aniversario = new Date(dataNascimento);
-    let idade = hoje.getFullYear() - aniversario.getFullYear();
-    const m = hoje.getMonth() - aniversario.getMonth();
-    
-    if (m < 0 || (m === 0 && hoje.getDate() < aniversario.getDate())) {
-        idade--;
-    }
-    
-    return idade;
-}
 watch(props, (value) => {
   if(value?.data?.data) dadosOrdenados.value = [...value.data.data]
 })

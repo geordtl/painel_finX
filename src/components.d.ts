@@ -10,7 +10,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TabelaDeSolicitacoes: typeof import('./components/TabelaDeSolicitacoes.vue')['default']
+    TabelaDeSolicitacoes: typeof import('./components/TabelaDeSolicitacoesVirtual.vue')['default']
     TabelaDeSolicitacoesPaginada: typeof import('./components/TabelaDeSolicitacoesPaginada.vue')['default']
+    TabelaDeSolicitacoesVirtual: typeof import('./components/TabelaDeSolicitacoesVirtual.vue')['default']
   }
 }

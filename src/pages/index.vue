@@ -14,8 +14,7 @@
           <v-col sm="4" md="2" class="mt-6 py-0 px-1">
             <v-text-field
               :hide-details="true"
-              v-model="filtroData"
-              :value="format.date(filtroData ?? '')"
+              :value="filtroData"
               label="Filtrar por data"
               class=""
               v-bind="props"
@@ -101,7 +100,7 @@
       <v-container> </v-container>
     </header>
     <main>
-      <TabelaDeSolicitacoesPaginada
+      <TabelaDeSolicitacoesVirtual
         :data="historico"
         :paginacao="historico.paginacao"
       />
@@ -116,7 +115,7 @@ import { useDate } from "vuetify";
 import api from "@/services/api";
 import format from "@/utils/format";
 
-import TabelaDeSolicitacoes from "@/components/TabelaDeSolicitacoes.vue";
+import TabelaDeSolicitacoesVirtual from "@/components/TabelaDeSolicitacoesVirtual.vue";
 import TabelaDeSolicitacoesPaginada from "@/components/TabelaDeSolicitacoesPaginada.vue";
 
 const storeDeSolicitacoes = useSolicitacoesStore();
