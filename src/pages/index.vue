@@ -9,13 +9,13 @@
         Consulte aqui as solicitações feitas para a Fin-X!
       </p>
 
-      <v-menu open-on-hover>
+      <v-menu >
         <template v-slot:activator="{ props }">
           <v-col sm="4" md="2" class="mt-6 py-0 px-1">
             <v-text-field
               :hide-details="true"
               v-model="filtroData"
-              :value="dataFormatada"
+              :value="format.date(filtroData ?? '')"
               label="Filtrar por data"
               class=""
               v-bind="props"
@@ -114,6 +114,7 @@ import { useSolicitacoesStore } from "@/store/useStoreSolicitacoes";
 import { onBeforeMount, ref, computed } from "vue";
 import { useDate } from "vuetify";
 import api from "@/services/api";
+import format from "@/utils/format";
 
 import TabelaDeSolicitacoes from "@/components/TabelaDeSolicitacoes.vue";
 import TabelaDeSolicitacoesPaginada from "@/components/TabelaDeSolicitacoesPaginada.vue";
@@ -179,15 +180,6 @@ async function filtrar() {
     filtrando.value = false;
   }, 300);
 }
-const dataFormatada = computed(() => {
-  if(!filtroData.value) return '';
-
-  const dia = String(filtroData.value.getDate()).padStart(2, "0");
-  const mes = String(filtroData.value.getMonth() + 1).padStart(2, "0");
-  const ano = filtroData.value.getFullYear();
-
-  return `${dia}/${mes}/${ano}`;
-});
 </script>
 
 <style scoped>

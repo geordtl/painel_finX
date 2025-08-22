@@ -25,8 +25,8 @@
         <td>{{ item.id }}</td>
         <td>{{ item.medico.nome }}</td>
         <td>{{ item.paciente.nome }}</td>
-        <td>{{ formatarData(item.paciente.dataNascimento) }}</td>
-        <td>{{ formatarData(item.dataCriacao) }}</td>
+        <td>{{ format.date(item.paciente.dataNascimento) }}</td>
+        <td>{{ format.date(item.dataCriacao) }}</td>
       </tr>
     </tbody>
 
@@ -47,6 +47,7 @@
 <script setup lang="ts">
 import type { ResponseSolicitacoes, Paginacao } from "@/types/solicitacoes";
 import { computed, ref, watch } from "vue";
+import format from "@/utils/format";
 
 const props = defineProps<ResponseSolicitacoes>();
 
@@ -67,23 +68,6 @@ const itensVisiveis = computed(() => {
 })
 
 const ordenando = ref(false);
-
-function formatarData(date: string){
-  const data = new Date(date);
-
-  const dia = String(data.getDate()).padStart(2, "0");
-  const mes = String(data.getMonth() + 1).padStart(2, "0");
-  const ano = data.getFullYear();
-
-  if(date.includes('T')){
-    const hora = String(data.getHours()).padStart(2, "0");
-    const minuto = String(data.getMinutes()).padStart(2, "0");
-
-    return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
-  }else {
-    return `${dia}/${mes}/${ano}`
-  }
-}
 
 function ordenarData(){
   ordenando.value = !ordenando.value;
