@@ -12,7 +12,7 @@
                 <p>Senha</p>
                 <input type="text">
     
-                <v-btn color="primary" flat class="rounded-lg w-100 mt-6" style="height: 45px;" @click="router.replace('/')">Entrar</v-btn>
+                <v-btn color="primary" flat class="rounded-lg w-100 mt-6" style="height: 45px;" @click="router.replace('/home')">Entrar</v-btn>
             </div>
         </section>
         <section v-if="isDesktop" class="bg-primary w-50">
