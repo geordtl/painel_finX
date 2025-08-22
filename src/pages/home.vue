@@ -1,0 +1,165 @@
+<template>
+  <div class="d-flex flex-column ma-8 ma-sm-16">
+    <header>
+      <section class="d-flex flex-row flex-wrap justify-space-between">
+        <div>
+          <img src="@/assets/logo.svg" alt="Logo Fin-X" class="logo" />
+          <p class="text-h5 text-sm-h4 font-weight-medium text-tertiary mt-4">
+            Solicitações cirúrgicas
+          </p>
+          <p class="text-body-2 text-lightGrey mt-1 mb-2">
+            Consulte aqui as solicitações feitas para a Fin-X!
+          </p>
+        </div>
+
+        <div class="d-flex flex-row flex-wrap justify-end">
+          <CardSolicitacoes :quantidade="qtdSolicitacoesHoje" class="mr-2 mb-2" />
+          <CardCirurgias :quantidade="8" class="mr-2 mb-2" />
+        </div>
+      </section>
+
+      <div class="d-flex justify-start align-center flex-wrap mt-2">
+        <p class="mr-2">Filtros:</p>
+
+        <v-menu :close-on-content-click="false">
+          <template v-slot:activator="{ props }">
+            <button v-bind="props" class="d-flex flex-row align-center justify-center data-button mr-2">
+              <v-icon size="16" color="darkGrey" class="mr-2">mdi-calendar-blank-outline</v-icon>
+              <p class="text-body-2">{{ filtros.data ? format.date(filtros.data) : 'dd/mm/yyyy' }}</p>
+              <v-icon size="16" class="ml-1">mdi-chevron-down</v-icon>
+            </button>
+          </template>
+
+          <v-list class="overflow-hidden" style="height: 380px; width: 260px;">
+            <v-date-picker color="blue" v-model="filtros.data" @click="buscarSolicitacoes()" header="Selecione uma data"
+              class="date-picker-small"></v-date-picker>
+          </v-list>
+        </v-menu>
+
+        <InputFiltro :nome="'Médico'" :icon="'mdi-stethoscope'" @clear="filtros.medico = '', filtrar()" @filtrar="filtros.medico = $event; filtrar()" />
+        <InputFiltro :nome="'Paciente'" :icon="'mdi-account-outline'" @clear="filtros.paciente = '', filtrar()" @filtrar="filtros.paciente = $event; filtrar()" />
+
+        <v-btn rounded="xl" flat class="bg-primary text-white font-weight-regular text-none my-2" @click="filtrar()">
+          Pesquisar
+        </v-btn>
+      </div>
+    </header>
+    <main>
+      <TabelaDeSolicitacoesPaginada :data="historico" :paginacao="historico.paginacao" />
+    </main>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { useSolicitacoesStore } from "@/store/useStoreSolicitacoes";
+import { onBeforeMount, ref, computed } from "vue";
+import api from "@/services/api";
+import format from "@/utils/format";
+
+const storeDeSolicitacoes = useSolicitacoesStore();
+const historico = computed(() => storeDeSolicitacoes.getSolicitacoes);
+const qtdSolicitacoesHoje = computed(() => {
+  const hojeStr = new Date().toDateString();
+
+  return historico.value.data.filter(item =>
+    new Date(item.dataCriacao).toDateString() === hojeStr
+  ).length;
+});
+
+const filtros = ref({
+  medico: '',
+  paciente: '',
+  data: '',
+})
+
+const filtrando = ref(false);
+
+onBeforeMount(async () => {
+  await buscarSolicitacoes();
+});
+
+async function buscarSolicitacoes() {
+  const dataISO = filtros.value.data ? filtros.value?.data?.toISOString().split("T")[0] : '';
+
+  const res = await api("get", "./db1000.json", `${dataISO}`);
+
+  storeDeSolicitacoes.setSolicitacoes(res);
+}
+
+async function filtrar() {
+  await buscarSolicitacoes();
+
+  filtrando.value = true;
+
+  const dadosFiltrados = historico.value.data.filter((item) => {
+    const encontrouMedico =
+      filtros.value.medico &&
+      item.medico.nome.toLowerCase().includes(filtros.value.medico.toLowerCase());
+    const encontrouPaciente =
+      filtros.value.paciente &&
+      item.paciente.nome.toLowerCase().includes(filtros.value.paciente.toLowerCase());
+
+    if (filtros.value.medico && filtros.value.paciente) {
+      return encontrouMedico && encontrouPaciente;
+    }
+
+    if (filtros.value.medico) return encontrouMedico;
+    if (filtros.value.paciente) return encontrouPaciente;
+
+    return true;
+  });
+
+  storeDeSolicitacoes.setSolicitacoes({
+    data: dadosFiltrados,
+    paginacao: {
+      paginaAtual: 1,
+      itensPorPagina: dadosFiltrados.length,
+      totalDePaginas: 1,
+      totalDeItens: 10,
+      next_page_url: "",
+      prev_page_url: null,
+    },
+  });
+
+  setTimeout(() => {
+    filtrando.value = false;
+  }, 300);
+}
+</script>
+
+<style scoped>
+@media screen and (max-width: 665px) {
+  .logo {
+    width: 70px;
+  }
+}
+
+@media screen and (min-width: 666px) {
+  .logo {
+    width: 120px;
+  }
+}
+
+.input {
+  height: 33px;
+  border: 1px solid #90DBFA;
+  color: rgb(77, 77, 77);
+  border-radius: 25px;
+  caret-color: #00A5EA;
+}
+
+.date-picker-small {
+  transform: scale(0.8);
+  /* 80% do tamanho original */
+  transform-origin: top left;
+  /* garante que encolha a partir do canto */
+}
+
+.data-button {
+  height: 33px;
+  min-width: 145px;
+  border-radius: 25px;
+  color: #525252;
+  background-color: #F0F1F3;
+}
+</style>
